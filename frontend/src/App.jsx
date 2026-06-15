@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useEffect } from 'react';
+import { useReducer, useCallback, useEffect, useState } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import CatalogGrid from './components/CatalogGrid';
@@ -129,8 +129,13 @@ function reducer(state, action) {
     }
     case 'REMOVE_FROM_CART':
       return { ...state, cart: state.cart.filter(c => c.id !== action.payload), knapsackResult: null };
-    case 'SET_SEARCH_RESULT':
-      return { ...state, searchResult: action.payload, highlightedProduct: action.payload.foundIndex };
+    case 'SET_SEARCH_RESULT': {
+      let actualIndex = -1;
+      if (action.payload.foundIndex >= 0) {
+        actualIndex = state.catalog.findIndex(p => p.name.toLowerCase() === action.payload.target.toLowerCase());
+      }
+      return { ...state, searchResult: action.payload, highlightedProduct: actualIndex };
+    }
     case 'SET_SORT_RESULT': {
       const { type, result } = action.payload;
       const newCatalog = result.originalIndices.map(idx => state.catalog[idx]);
@@ -164,6 +169,16 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const algorithms = useAlgorithms(dispatch);
+  
+  const [theme, setTheme] = useState('light');
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
 
   const handleGenerateCatalog = useCallback(() => {
     dispatch({ type: 'GENERATE_CATALOG' });
@@ -203,6 +218,8 @@ function App() {
         catalog={state.catalog}
         onSearch={algorithms.runBinarySearch}
         searchLoading={algorithms.loading.search}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <div style={{ marginTop: '2rem' }}>
