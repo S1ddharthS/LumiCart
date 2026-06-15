@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount, catalog, onSearch, searchLoading }) {
+export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount, catalog, onSearch, searchLoading, theme, onToggleTheme }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = useCallback(async (e) => {
@@ -54,8 +54,14 @@ export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount,
           </div>
         </div>
 
-        {/* Cart Badge */}
+        {/* Actions */}
         <div className="nav-actions">
+          {/* Theme Toggle */}
+          <button onClick={onToggleTheme} className="btn-neo" style={{ padding: '0.55rem', borderRadius: '50%', fontSize: '1rem', width: '2.5rem', height: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Toggle Theme">
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+
+          {/* Cart Badge */}
           <div className="cart-icon-wrapper neo-card" style={{ padding: '0.5rem 0.8rem', cursor: 'pointer', position: 'relative' }}>
             <span style={{ fontSize: '1.2rem' }}>🛒</span>
             {cartCount > 0 && (
