@@ -10,6 +10,7 @@ import PromoTargeter from './components/PromoTargeter';
 import DiagnosticsTerminal from './components/DiagnosticsTerminal';
 import GlobalControls from './components/GlobalControls';
 import FloydMatrixModal from './components/FloydMatrixModal';
+import AuthPage from './components/AuthPage';
 import { useAlgorithms } from './hooks/useAlgorithms';
 
 /* ============================
@@ -108,6 +109,8 @@ const initialState = {
   sessionToken: crypto.randomUUID().split('-')[0].toUpperCase(),
   showFloydModal: false,
   highlightedProduct: -1,
+  isAuthenticated: false,
+  userProfile: null,
 };
 
 function reducer(state, action) {
@@ -157,6 +160,10 @@ function reducer(state, action) {
       return { ...state, logs: [] };
     case 'CLEAR_HIGHLIGHT':
       return { ...state, highlightedProduct: -1 };
+    case 'LOGIN':
+      return { ...state, isAuthenticated: true, userProfile: action.payload };
+    case 'LOGOUT':
+      return { ...initialState, sessionToken: state.sessionToken, logs: [] };
     default:
       return state;
   }
@@ -210,25 +217,31 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar
-        catalogCount={state.catalog.length}
-        mstCost={mstCost}
-        sessionToken={state.sessionToken}
-        cartCount={state.cart.length}
-        catalog={state.catalog}
-        onSearch={algorithms.runBinarySearch}
-        searchLoading={algorithms.loading.search}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
+      {!state.isAuthenticated ? (
+        <AuthPage onLogin={(profile) => dispatch({ type: 'LOGIN', payload: profile })} />
+      ) : (
+        <>
+          <Navbar
+            catalogCount={state.catalog.length}
+            mstCost={mstCost}
+            sessionToken={state.sessionToken}
+            cartCount={state.cart.length}
+            catalog={state.catalog}
+            onSearch={algorithms.runBinarySearch}
+            searchLoading={algorithms.loading.search}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+            userProfile={state.userProfile}
+            onLogout={() => dispatch({ type: 'LOGOUT' })}
+          />
 
-      <div style={{ marginTop: '2rem' }}>
-        <GlobalControls
-          onGenerate={handleGenerateCatalog}
-          onClear={handleClearState}
-          hasCatalog={state.catalog.length > 0}
-        />
-      </div>
+          <div style={{ marginTop: '2rem' }}>
+            <GlobalControls
+              onGenerate={handleGenerateCatalog}
+              onClear={handleClearState}
+              hasCatalog={state.catalog.length > 0}
+            />
+          </div>
 
       {state.catalog.length > 0 ? (
         <div className="section-container animate-fade-in" style={{ marginTop: '2rem' }}>
@@ -334,12 +347,13 @@ function App() {
         </div>
       )}
 
-      {/* Floyd-Warshall Matrix Modal */}
-      {state.showFloydModal && state.floydResult && (
-        <FloydMatrixModal
-          result={state.floydResult}
-          onClose={() => dispatch({ type: 'CLOSE_FLOYD_MODAL' })}
-        />
+          {state.showFloydModal && state.floydResult && (
+            <FloydMatrixModal
+              result={state.floydResult}
+              onClose={() => dispatch({ type: 'CLOSE_FLOYD_MODAL' })}
+            />
+          )}
+        </>
       )}
     </div>
   );

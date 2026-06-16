@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount, catalog, onSearch, searchLoading, theme, onToggleTheme }) {
+export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount, catalog, onSearch, searchLoading, theme, onToggleTheme, userProfile, onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = useCallback(async (e) => {
@@ -56,6 +56,17 @@ export default function Navbar({ catalogCount, mstCost, sessionToken, cartCount,
 
         {/* Actions */}
         <div className="nav-actions">
+          {userProfile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginRight: '0.5rem', paddingRight: '1rem', borderRight: '1px solid rgba(0,0,0,0.1)' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                Hi, <span className="text-blue">{userProfile.name}</span>
+              </span>
+              <button onClick={onLogout} className="btn-neo" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} title="Logout">
+                Logout
+              </button>
+            </div>
+          )}
+
           {/* Theme Toggle */}
           <button onClick={onToggleTheme} className="btn-neo" style={{ padding: '0.55rem', borderRadius: '50%', fontSize: '1rem', width: '2.5rem', height: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Toggle Theme">
             {theme === 'light' ? '🌙' : '☀️'}
