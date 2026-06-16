@@ -50,14 +50,14 @@ export default function SearchFilter({ catalog, searchResult, onSearch, loading,
             <span style={{ fontSize: '1.2rem' }}>{searchResult.foundIndex >= 0 ? '✅' : '❌'}</span>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: searchResult.foundIndex >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)' }}>
               {searchResult.foundIndex >= 0
-                ? `Found "${searchResult.target}" at index ${searchResult.foundIndex}`
+                ? `Found "${searchResult.target}" at index ${searchResult.foundIndex + 1}`
                 : `"${searchResult.target}" not found in catalog`}
             </span>
           </div>
 
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
             <div>Comparisons: <span className="text-blue font-bold">{searchResult.totalComparisons}</span></div>
-            <div>Elements inspected: <span className="text-blue font-mono">[{searchResult.inspectedIndices?.join(', ')}]</span></div>
+            <div>Elements inspected: <span className="text-blue font-mono">[{searchResult.inspectedIndices?.map(i => i + 1).join(', ')}]</span></div>
             <div>Time: <span className="text-blue font-bold">{searchResult.executionTimeUs?.toFixed(2)} μs</span></div>
           </div>
 
