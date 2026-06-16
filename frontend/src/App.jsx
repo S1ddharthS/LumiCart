@@ -253,6 +253,7 @@ function App() {
               <SearchFilter
                 catalog={state.catalog}
                 searchResult={state.searchResult}
+                highlightedProduct={state.highlightedProduct}
                 onSearch={algorithms.runBinarySearch}
                 loading={algorithms.loading.search}
                 onClearHighlight={() => dispatch({ type: 'CLEAR_HIGHLIGHT' })}

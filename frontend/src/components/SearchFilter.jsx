@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export default function SearchFilter({ catalog, searchResult, onSearch, loading, onClearHighlight }) {
+export default function SearchFilter({ catalog, searchResult, highlightedProduct, onSearch, loading, onClearHighlight }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = useCallback(async () => {
@@ -50,7 +50,7 @@ export default function SearchFilter({ catalog, searchResult, onSearch, loading,
             <span style={{ fontSize: '1.2rem' }}>{searchResult.foundIndex >= 0 ? '✅' : '❌'}</span>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: searchResult.foundIndex >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)' }}>
               {searchResult.foundIndex >= 0
-                ? `Found "${searchResult.target}" at index ${searchResult.foundIndex + 1}`
+                ? `Found "${searchResult.target}" at index ${highlightedProduct + 1}`
                 : `"${searchResult.target}" not found in catalog`}
             </span>
           </div>
